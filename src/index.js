@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ViewPropTypes,
   Text,
+  View,
 } from 'react-native';
 
 import PropTypes from 'prop-types';
@@ -16,6 +17,7 @@ import Page from './Page';
 import Pagination from './Pagination';
 import Dot from './Dot';
 import SkipButton from './buttons/SkipButton';
+import PreviousButton from './buttons/PreviousButton';
 import NextButton from './buttons/NextButton';
 import DoneButton from './buttons/DoneButton';
 
@@ -54,6 +56,13 @@ class Onboarding extends Component {
         currentPage: viewableItems[0].index,
         backgroundColorAnim: new Animated.Value(0),
       };
+    });
+  };
+
+  goPrevious = () => {
+    this.flatList.scrollToIndex({
+      animated: true,
+      index: this.state.currentPage - 1,
     });
   };
 
@@ -114,15 +123,18 @@ class Onboarding extends Component {
       bottomBarHeight,
       controlStatusBar,
       showSkip,
+      showPrevious,
       showNext,
       showDone,
       onSkip,
       onDone,
       skipLabel,
+      previousLabel,
       nextLabel,
       allowFontScalingButtons,
       SkipButtonComponent,
       DoneButtonComponent,
+      PreviousButtonComponent,
       NextButtonComponent,
       DotComponent,
       flatlistProps,
@@ -163,6 +175,26 @@ class Onboarding extends Component {
           }
         : onSkip;
 
+    const isLastPage = currentPage + 1 === pages.length;
+    const SkipButtonFinal = showSkip &&
+      !isLastPage && (
+        <View style={styles.buttonTopRight}>
+          <SkipButtonComponent
+            isLight={isLight}
+            skipLabel={skipLabel}
+            allowFontScaling={allowFontScalingButtons}
+            onPress={() => {
+              if (typeof onSkip === 'function') {
+                if (controlStatusBar) {
+                  StatusBar.setBarStyle('default', true);
+                }
+                onSkip();
+              }
+            }}
+          />
+        </View>
+      );
+
     return (
       <Animated.View
         onLayout={this._onLayout}
@@ -188,10 +220,11 @@ class Onboarding extends Component {
           {...flatlistProps}
         />
         <SafeAreaView style={bottomBarHighlight ? styles.overlay : {}}>
+          {SkipButtonFinal}
           <Pagination
             isLight={isLight}
             bottomBarHeight={bottomBarHeight}
-            showSkip={showSkip}
+            showPrevious={showPrevious}
             showNext={showNext}
             showDone={showDone}
             numPages={pages.length}
@@ -199,12 +232,14 @@ class Onboarding extends Component {
             controlStatusBar={controlStatusBar}
             onSkip={skipFun}
             onDone={onDone}
+            onPrevious={this.goPrevious}
             onNext={this.goNext}
-            skipLabel={skipLabel}
+            previousLabel={previousLabel}
             nextLabel={nextLabel}
             allowFontScaling={allowFontScalingButtons}
             SkipButtonComponent={SkipButtonComponent}
             DoneButtonComponent={DoneButtonComponent}
+            PreviousButtonComponent={PreviousButtonComponent}
             NextButtonComponent={NextButtonComponent}
             DotComponent={DotComponent}
           />
@@ -240,6 +275,7 @@ Onboarding.propTypes = {
   nextLabel: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   SkipButtonComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   DoneButtonComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
+  PreviousButtonComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   NextButtonComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   DotComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   containerStyles: ViewPropTypes.style,
@@ -261,11 +297,13 @@ Onboarding.defaultProps = {
   showNext: true,
   showDone: true,
   skipLabel: 'Skip',
+  previousLabel: 'Previous',
   nextLabel: 'Next',
   onSkip: null,
   onDone: null,
   SkipButtonComponent: SkipButton,
   DoneButtonComponent: DoneButton,
+  PreviousButtonComponent: PreviousButton,
   NextButtonComponent: NextButton,
   DotComponent: Dot,
   containerStyles: null,
@@ -283,6 +321,12 @@ const styles = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
+  topRightButton: {
+    position: 'absolute',
+    top: 50,
+    right: 50,
+    backgroundColor: 'yellow',
+  }
 };
 
 export default Onboarding;

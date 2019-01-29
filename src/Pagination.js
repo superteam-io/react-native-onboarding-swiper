@@ -10,36 +10,28 @@ const Pagination = ({
   isLight,
   bottomBarHeight,
   controlStatusBar,
-  showSkip,
+  showPrevious,
   showNext,
   showDone,
+  onPrevious,
   onNext,
-  onSkip,
   onDone,
-  skipLabel,
+  previousLabel,
   nextLabel,
   allowFontScaling,
-  SkipButtonComponent,
+  PreviousButtonComponent,
   NextButtonComponent,
   DoneButtonComponent,
   DotComponent,
 }) => {
   const isLastPage = currentPage + 1 === numPages;
 
-  const SkipButtonFinal = showSkip &&
-    !isLastPage && (
-      <SkipButtonComponent
-        isLight={isLight}
-        skipLabel={skipLabel}
+  const PreviousButtonFinal = showPrevious && (
+      <PreviousButtonComponent
+        previousLabel={previousLabel}
 		allowFontScaling={allowFontScaling}
-        onPress={() => {
-          if (typeof onSkip === 'function') {
-            if (controlStatusBar) {
-              StatusBar.setBarStyle('default', true);
-            }
-            onSkip();
-          }
-        }}
+        isLight={isLight}
+        onPress={onPrevious}
       />
     );
 
@@ -76,7 +68,7 @@ const Pagination = ({
         ...styles.container,
       }}
     >
-      <View style={styles.buttonLeft}>{SkipButtonFinal}</View>
+      <View style={styles.buttonLeft}>{PreviousButtonFinal}</View>
       <Dots
         isLight={isLight}
         numPages={numPages}
@@ -97,18 +89,14 @@ Pagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
   isLight: PropTypes.bool.isRequired,
   bottomBarHeight: PropTypes.number.isRequired,
+  showPrevious: PropTypes.bool.isRequired,
   showNext: PropTypes.bool.isRequired,
-  showSkip: PropTypes.bool.isRequired,
   showDone: PropTypes.bool.isRequired,
+  onPrevious: PropTypes.func.isRequired,
   onNext: PropTypes.func.isRequired,
-  onSkip: PropTypes.func,
   onDone: PropTypes.func,
   allowFontScaling: PropTypes.bool,
-  skipLabel: PropTypes.oneOfType([PropTypes.element, PropTypes.string])
-    .isRequired,
   nextLabel: PropTypes.oneOfType([PropTypes.element, PropTypes.string])
-    .isRequired,
-  SkipButtonComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func])
     .isRequired,
   DoneButtonComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func])
     .isRequired,

@@ -6,7 +6,7 @@ import { BUTTON_SIZE, MARGIN_LEFT, getDefaultStyle } from './util';
 const PreviousButton = ({ previousLabel, isLight, ...rest }) => (
   <TextButton
     size={BUTTON_SIZE}
-    style={{ marginLeft: MARGIN_LEFT }}
+    style={{ marginLeft: MARGIN_LEFT, backgroundColor: 'red' }}
     textStyle={getDefaultStyle(isLight)}
     {...rest}
   >

@@ -50,7 +50,7 @@ class Onboarding extends Component {
 
     this.setState(state => {
       this.props.pageIndexCallback &&
-        this.props.pageIndexCallback(viewableItems[0].index);
+      this.props.pageIndexCallback(viewableItems[0].index);
       return {
         previousPage: state.currentPage,
         currentPage: viewableItems[0].index,
@@ -168,17 +168,17 @@ class Onboarding extends Component {
     const skipFun =
       skipToPage != null
         ? () => {
-            this.flatList.scrollToIndex({
-              animated: true,
-              index: skipToPage,
-            });
-          }
+          this.flatList.scrollToIndex({
+            animated: true,
+            index: skipToPage,
+          });
+        }
         : onSkip;
 
     const isLastPage = currentPage + 1 === pages.length;
     const SkipButtonFinal = showSkip &&
       !isLastPage && (
-        <View style={styles.buttonTopRight}>
+        <View style={styles.topRightButton}>
           <SkipButtonComponent
             isLight={isLight}
             skipLabel={skipLabel}
@@ -188,7 +188,7 @@ class Onboarding extends Component {
                 if (controlStatusBar) {
                   StatusBar.setBarStyle('default', true);
                 }
-                onSkip();
+                skipFun();
               }
             }}
           />
@@ -219,8 +219,8 @@ class Onboarding extends Component {
           }
           {...flatlistProps}
         />
+        {SkipButtonFinal}
         <SafeAreaView style={bottomBarHighlight ? styles.overlay : {}}>
-          {SkipButtonFinal}
           <Pagination
             isLight={isLight}
             bottomBarHeight={bottomBarHeight}
@@ -230,7 +230,6 @@ class Onboarding extends Component {
             numPages={pages.length}
             currentPage={this.state.currentPage}
             controlStatusBar={controlStatusBar}
-            onSkip={skipFun}
             onDone={onDone}
             onPrevious={this.goPrevious}
             onNext={this.goNext}
@@ -294,6 +293,7 @@ Onboarding.defaultProps = {
   bottomBarHeight: 60,
   controlStatusBar: true,
   showSkip: true,
+  showPrevious: true,
   showNext: true,
   showDone: true,
   skipLabel: 'Skip',
@@ -324,7 +324,7 @@ const styles = {
   topRightButton: {
     position: 'absolute',
     top: 50,
-    right: 50,
+    right: 0,
     backgroundColor: 'yellow',
   }
 };
